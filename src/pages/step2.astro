@@ -1,0 +1,81 @@
+---
+import Default from '../layouts/Default.astro';
+import Panel from "../components/Panel.astro";
+---
+<Default title="Walentynki - Krok drugi">
+    <Panel>
+        <div>
+            <div id="before-form">
+                <h1 class="text-center text-2xl font-medium text-neutral-700">Czy zostaniesz moją Walentynką?</h1>
+                <div class="mt-8 w-full inline-flex gap-x-4">
+                    <button id="answer-yes" type="button" class="flex-1 text-xl px-8 py-4 rounded text-neutral-50 font-medium transition-all bg-rose-500 hover:bg-rose-700">Tak</button>
+                </div>
+            </div>
+
+            <div id="form" class="hidden">
+                <h2 class="text-2xl text-neutral-700 font-medium text-center">Podaj adres gdzie aktualnie przebywasz mój maluszku :)</h2>
+                <div class="mt-8">
+                    <div class="mb-4">
+                        <label for="city" class="text-lg text-neutral-700 font-medium">Miasto/Obszar</label>
+                        <input type="text" name="city" id="city" class="w-full p-2 block border rounded">
+                    </div>
+                    <div class="mb-4">
+                        <label for="postal-code" class="text-lg text-neutral-700 font-medium">Kod pocztowy</label>
+                        <input type="text" name="postalcode" id="postal-code" class="w-full p-2 block border rounded">
+                    </div>
+                    <div class="mb-4">
+                        <label for="street" class="text-lg text-neutral-700 font-medium">Ulica</label>
+                        <input type="text" name="street" id="street" class="w-full p-2 block border rounded">
+                    </div>
+                    <div class="mb-4">
+                        <label for="building" class="text-lg text-neutral-700 font-medium">Numer budynku/Numer mieszkania</label>
+                        <input type="text" name="building" id="building" class="w-full p-2 block border rounded">
+                    </div>
+                    <div class="mt-10">
+                        <button id="sbmBtn" class="w-full text-lg py-4 rounded text-neutral-50 font-medium transition-all bg-rose-500 hover:bg-rose-700">Tutaj aktualnie przebywam!</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </Panel>
+</Default>
+
+<script>
+    import {init,send} from "@emailjs/browser";
+
+    (function(){
+        init({
+            publicKey: "K6vOyEDKWxhJaj9Bv",
+        });
+    })();
+
+    const yesBtn = document.querySelector('#answer-yes')
+    const sbmBtn = document.querySelector('#sbmBtn')
+
+    yesBtn.addEventListener('click', function () {
+        document.querySelector('#before-form').classList.add('hidden')
+        document.querySelector('#form').classList.remove('hidden')
+    })
+
+    sbmBtn.addEventListener('click', function () {
+        const data = {
+            'city': document.getElementsByName('city')[0].value,
+            'postal': document.getElementsByName('postalcode')[0].value,
+            'street': document.getElementsByName('street')[0].value,
+            'building': document.getElementsByName('building')[0].value
+        }
+
+        send(
+            'service_17fppka',
+            'template_n1d61cj',
+            data
+        ).then(
+            (response) => {
+                return window.location.href = '/step3'
+            },
+            (error) => {
+                console.log('FAILED...', error);
+            },
+        )
+    })
+</script>
